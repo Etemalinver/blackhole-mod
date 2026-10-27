@@ -15,14 +15,16 @@ import com.dsh.blackhole.BlackHoleMod;
 
 /**
  * 飞行中的黑洞手雷：撞到方块/实体后就地生成黑洞。
+ * 1.21.1 的 ThrownItemEntity 是抽象类，必须实现 getDefaultItemStack()。
  */
 public class ThrownBlackHole extends ThrownItemEntity {
-    public ThrownBlackHole(EntityType<? extends ThrownItemEntity> type, World world) {
+    public ThrownBlackHole(EntityType<? extends ThrownBlackHole> type, World world) {
         super(type, world);
     }
 
-    public ThrownBlackHole(World world, LivingEntity owner, ItemStack stack) {
-        super(BlackHoleMod.THROWN_BLACK_HOLE, owner, world, stack);
+    @Override
+    protected ItemStack getDefaultItemStack() {
+        return new ItemStack(BlackHoleMod.BLACK_HOLE_GRENADE);
     }
 
     @Override
