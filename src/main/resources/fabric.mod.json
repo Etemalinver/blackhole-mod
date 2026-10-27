@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "blackhole",
+  "version": "${version}",
+  "name": "Black Hole Grenade",
+  "description": "投掷式黑洞：50 格吸附、持续伤害、吸积盘与透镜光环特效。Throwable black hole with a 50-block gravity well.",
+  "authors": ["DSH"],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/blackhole/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.dsh.blackhole.BlackHoleMod"],
+    "client": ["com.dsh.blackhole.client.BlackHoleClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

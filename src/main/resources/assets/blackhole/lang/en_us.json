@@ -1,0 +1,7 @@
+{
+  "itemGroup.blackhole.main": "Black Hole Grenade",
+  "item.blackhole.black_hole_grenade": "Black Hole Grenade",
+  "entity.blackhole.black_hole": "Black Hole",
+  "entity.blackhole.thrown_black_hole": "Black Hole Grenade",
+  "item.blackhole.black_hole_grenade.tooltip": "Throw it — 50 block gravity well, 12s"
+}
