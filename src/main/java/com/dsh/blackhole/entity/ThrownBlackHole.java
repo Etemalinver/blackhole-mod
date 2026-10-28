@@ -14,6 +14,10 @@ import net.minecraft.world.World;
 
 import com.dsh.blackhole.BlackHoleMod;
 
+/**
+ * 飞行中的黑洞手雷。
+ * 直接继承 Entity，自己推进位置 + 射线检测碰撞，避免 ProjectileEntity 的默认行为导致“原地不动”。
+ */
 public class ThrownBlackHole extends Entity {
     public ThrownBlackHole(EntityType<?> type, World world) {
         super(type, world);
