@@ -1,0 +1,7 @@
+{
+  "itemGroup.blackhole.main": "黑洞手雷",
+  "item.blackhole.black_hole_grenade": "黑洞手雷",
+  "entity.blackhole.black_hole": "黑洞",
+  "entity.blackhole.thrown_black_hole": "黑洞手雷",
+  "item.blackhole.black_hole_grenade.tooltip": "扔出去：50 格吸附 · 持续 12 秒"
+}
