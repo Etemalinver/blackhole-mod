@@ -1,7 +1,7 @@
 package com.dsh.blackhole.item;
 
 import com.dsh.blackhole.BlackHoleMod;
-import com.dsh.blackhole.entity.ThrownBlackHole;
+import com.dsh.blackhole.entity.BlackHoleEntity;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -10,12 +10,11 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
-/**
- * 黑洞手雷：右键扔出去，落点生成一个持续 12 秒的黑洞。
- */
 public class BlackHoleGrenadeItem extends Item {
     public BlackHoleGrenadeItem(Settings settings) {
         super(settings);
@@ -24,19 +23,19 @@ public class BlackHoleGrenadeItem extends Item {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack stack = user.getStackInHand(hand);
-
         world.playSound(null, user.getX(), user.getY(), user.getZ(),
                 SoundEvents.ENTITY_SNOWBALL_THROW, SoundCategory.PLAYERS, 0.8f, 0.45f);
-
         if (!world.isClient) {
-            ThrownBlackHole projectile = new ThrownBlackHole(BlackHoleMod.THROWN_BLACK_HOLE, world);
-            projectile.setOwner(user);
-            projectile.setPosition(user.getX(), user.getEyeY() - 0.15, user.getZ());
-            Vec3d look = user.getRotationVec(1.0f);
-            projectile.setVelocity(look.x * 1.9, look.y * 1.9 + 0.12, look.z * 1.9);
-            world.spawnEntity(projectile);
+            Vec3d from = user.getEyePos();
+            Vec3d to = from.add(user.getRotationVec(1.0f).multiply(40.0));
+            HitResult hit = world.raycast(new RaycastContext(from, to,
+                    RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, user));
+            Vec3d spawnAt = hit.getType() == HitResult.Type.MISS ? to : hit.getPos();
+            BlackHoleEntity hole = new BlackHoleEntity(BlackHoleMod.BLACK_HOLE, world);
+            hole.setPosition(spawnAt.getX(), spawnAt.getY(), spawnAt.getZ());
+            hole.setOwner(user);
+            world.spawnEntity(hole);
         }
-
         stack.decrementUnlessCreative(1, user);
         return TypedActionResult.success(stack, world.isClient());
     }
