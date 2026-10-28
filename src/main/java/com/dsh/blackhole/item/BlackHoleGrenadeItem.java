@@ -30,7 +30,6 @@ public class BlackHoleGrenadeItem extends Item {
 
         if (!world.isClient) {
             ThrownBlackHole projectile = new ThrownBlackHole(BlackHoleMod.THROWN_BLACK_HOLE, world);
-            projectile.setItem(stack.copy());
             projectile.setOwner(user);
             projectile.setPosition(user.getX(), user.getEyeY() - 0.15, user.getZ());
             Vec3d look = user.getRotationVec(1.0f);
