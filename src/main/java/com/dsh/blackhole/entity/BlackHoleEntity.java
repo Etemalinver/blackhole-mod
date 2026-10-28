@@ -16,17 +16,15 @@ import net.minecraft.world.World;
 import java.util.List;
 
 /**
- * 黑洞本体：站在原地吸 50 格内的实体、持续造成伤害、喷吸积盘粒子。
- * 生命周期 12 秒（240 tick），结束时来一次“蒸发”爆发。
- */
+ * 榛戞礊鏈綋锛氱珯鍦ㄥ師鍦板惛 50 鏍煎唴鐨勫疄浣撱€佹寔缁€犳垚浼ゅ銆佸柗鍚哥Н鐩樼矑瀛愩€? * 鐢熷懡鍛ㄦ湡 12 绉掞紙240 tick锛夛紝缁撴潫鏃舵潵涓€娆♀€滆捀鍙戔€濈垎鍙戙€? */
 public class BlackHoleEntity extends Entity {
-    /** 吸附半径（方块） */
+    /** 鍚搁檮鍗婂緞锛堟柟鍧楋級 */
     public static final double RADIUS = 50.0;
-    /** 存活时长（tick） */
+    /** 瀛樻椿鏃堕暱锛坱ick锛?*/
     public static final int LIFETIME = 240;
-    /** 每 tick 的吸附加速度系数 */
+    /** 姣?tick 鐨勫惛闄勫姞閫熷害绯绘暟 */
     private static final double PULL = 0.16;
-    /** 每 10 tick 结算一次伤害，中心最大 8 点 */
+    /** 姣?10 tick 缁撶畻涓€娆′激瀹筹紝涓績鏈€澶?8 鐐?*/
     private static final float MAX_DAMAGE = 8.0f;
 
     private int age;
@@ -44,7 +42,7 @@ public class BlackHoleEntity extends Entity {
 
     @Override
     protected void initDataTracker(DataTracker.Builder builder) {
-        // 不需要同步数据：位置与年龄两端各自算
+        // 涓嶉渶瑕佸悓姝ユ暟鎹細浣嶇疆涓庡勾榫勪袱绔悇鑷畻
     }
 
     @Override
@@ -83,20 +81,20 @@ public class BlackHoleEntity extends Entity {
                 e -> !(e instanceof BlackHoleEntity) && e.isAlive());
 
         for (Entity target : nearby) {
+            if (target == this.owner) continue;
             Vec3d toCenter = this.getPos().subtract(target.getPos());
             double distance = toCenter.length();
             if (distance > RADIUS || distance < 0.05) continue;
 
             double falloff = 1.0 - (distance / RADIUS);
-            falloff *= falloff; // 越靠近越强
-
+            falloff *= falloff; // 瓒婇潬杩戣秺寮?
             Vec3d dir = toCenter.normalize();
-            // 切向分量：让被吸的东西绕着转，像吸积盘
+            // 鍒囧悜鍒嗛噺锛氳琚惛鐨勪笢瑗跨粫鐫€杞紝鍍忓惛绉洏
             Vec3d tangent = new Vec3d(-dir.z, 0.0, dir.x).multiply(0.55 * falloff);
 
             double accel = PULL * (0.35 + falloff * 2.2);
             Vec3d add = dir.multiply(accel).add(tangent.multiply(accel * 0.5));
-            // 眼内轻微上浮，避免全贴地
+            // 鐪煎唴杞诲井涓婃诞锛岄伩鍏嶅叏璐村湴
             add = add.add(0.0, 0.012 * falloff, 0.0);
 
             target.addVelocity(add.x, add.y, add.z);
@@ -128,7 +126,7 @@ public class BlackHoleEntity extends Entity {
 
         double t = this.age * 0.16;
 
-        // 吸积盘：两层旋臂，越靠外转得越慢
+        // 鍚哥Н鐩橈細涓ゅ眰鏃嬭噦锛岃秺闈犲杞緱瓒婃參
         for (int i = 0; i < 3; i++) {
             double angle = t + i * (Math.PI * 2.0 / 3.0);
             double r = 2.6 - (this.age % 40) * 0.03;
@@ -140,8 +138,7 @@ public class BlackHoleEntity extends Entity {
                     py, this.getZ() + Math.sin(angle + 1.05) * (r + 1.2), 1, 0.0, 0.0, 0.0, 0.02);
         }
 
-        // 被吸进来的东西：向心的暗色残影
-        sw.spawnParticles(ParticleTypes.PORTAL, this.getX(), this.getY() + 0.4, this.getZ(),
+        // 琚惛杩涙潵鐨勪笢瑗匡細鍚戝績鐨勬殫鑹叉畫褰?        sw.spawnParticles(ParticleTypes.PORTAL, this.getX(), this.getY() + 0.4, this.getZ(),
                 6, 1.8, 1.2, 1.8, 0.9);
 
         if (this.age % 4 == 0) {
@@ -151,7 +148,7 @@ public class BlackHoleEntity extends Entity {
     }
 
     private void spawnClientParticles() {
-        // 客户端只做少量补充，主体粒子由服务端广播
+        // 瀹㈡埛绔彧鍋氬皯閲忚ˉ鍏咃紝涓讳綋绮掑瓙鐢辨湇鍔＄骞挎挱
         if (this.age % 3 != 0) return;
         for (int i = 0; i < 2; i++) {
             double angle = this.age * 0.2 + i * Math.PI;
